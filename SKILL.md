@@ -142,3 +142,5 @@ Everything reads from the index. Nothing else touches the filesystem.
 | Breadcrumb, cards, lists, renderer, style hooks | breadcrumb, category card, article list, react-markdown, data-help, styling | [ui-content.md](references/ui-content.md) |
 | Beyond the shipped module | full-text, Pagefind, TOC, feedback, git dates, MDX, CMS, redirects | [extensions.md](references/extensions.md) |
 | Why the templates differ from the earlier implementation | provenance, audit, ledger, kept deliberately, fixing the earlier implementation | [provenance.md](references/provenance.md) |
+
+Part of the [Timerise Skills](https://github.com/timerise-ai/skills) index, which lists the sibling skills.

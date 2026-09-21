@@ -10,7 +10,7 @@ The skill was written by the engineer who has shipped this module; `references/p
 
 ## Structure
 
-- `SKILL.md` — entry point. Frontmatter `description` is the trigger surface. The body carries the architecture, critical facts, hard rules, and the **reference directory table** mapping trigger keywords to `references/`.
+- `SKILL.md` — entry point. Frontmatter `description` is the trigger surface. The body carries the architecture, critical facts, hard rules, the **reference directory table** mapping trigger keywords to `references/`, and a closing line linking the skills index.
 - `references/*.md` — one topic per file, loaded on demand. `adaptation.md` (seam contract) and `content-model.md` (config + types) are the design entry points; the rest cover the loader, search, tags (`tags.md`: slug identity, tag page, chips, tag validation), i18n, routes, UI (`ui.md` shell/nav, `ui-content.md` cards/lists/renderer/style hooks), extensions and provenance.
 
 ## Editing conventions
