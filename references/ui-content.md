@@ -1,7 +1,7 @@
-# UI — content components
+# UI: content components
 
 Breadcrumb, cards, lists and the markdown renderer: the pieces the three pages
-compose inside [HelpShell](ui.md). Same rule as the shell — structure and
+compose inside [HelpShell](ui.md). Same rule as the shell: structure and
 semantics only; every visual state is a `data-help-*` or ARIA hook the host
 styles (table at the end).
 
@@ -103,7 +103,7 @@ import { tagRefs } from "@/lib/help/tags";
 
 type Props = {
   locale: string;
-  /** One category's articles, or one tag's across categories — each row links by its own category. */
+  /** One category's articles, or one tag's across categories; each row links by its own category. */
   articles: readonly HelpArticleSummary[];
 };
 
@@ -140,7 +140,7 @@ export default function HelpArticleList({ locale, articles }: Props) {
 }
 ```
 
-Linked chips — the article header and the landing-page cloud — are
+Linked chips, on the article header and the landing-page cloud, are
 `HelpTagChips` in [tags.md](tags.md).
 
 ## Markdown rendering (seam)
@@ -190,7 +190,7 @@ existing article styles).
 | `[role=option][data-active]` | keyboard-highlighted search result |
 | `[data-help-search-results]` | result popover |
 | `[data-help-card]` | category card, article row, featured link |
-| `[data-help-tag]` | tag chip — an `<a>` in `HelpTagChips`, a `<span>` inside list rows |
+| `[data-help-tag]` | tag chip: an `<a>` in `HelpTagChips`, a `<span>` inside list rows |
 | `[data-help-tags]` | chip list |
 | `[data-help-untranslated]` | fallback-language notice |
 | `[data-help-icon=search\|menu\|close\|<category>]` | icon slots |

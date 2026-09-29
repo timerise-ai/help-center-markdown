@@ -7,34 +7,34 @@ without re-deriving the design; none was in the earlier implementation (see
 ## Full-text search
 
 Headings cover most "the term is only in the body" misses. When they stop
-being enough — a corpus past ~200 articles, or long reference pages — pick by
-where the index should live:
+being enough, with a corpus past ~200 articles or long reference pages, pick
+by where the index should live:
 
 | Approach | Index lives | Cost | When |
 |---|---|---|---|
-| Ship body tokens in `HelpSearchDoc` | client, in the page payload | +2–5 KB per article on every help page | < 100 articles, short bodies |
-| Prebuilt JSON fetched on focus | `public/help-index.{locale}.json`, generated in `validate:help` | one request, cached | 100–1000 articles |
+| Ship body tokens in `HelpSearchDoc` | client, in the page payload | +2 to 5 KB per article on every help page | < 100 articles, short bodies |
+| Prebuilt JSON fetched on focus | `public/help-index.{locale}.json`, generated in `validate:help` | one request, cached | 100 to 1000 articles |
 | Pagefind | static files built post-`next build` | zero runtime, excellent ranking | any size, static hosting |
 | Route handler + server search | server memory | a request per keystroke | needs live content or auth |
 
 For the first two, extend `toSearchDoc` with `body: tokenize(article.content)`
 deduplicated, add `body: 1` to `WEIGHTS`, and keep everything else. Keep
-`prepareSearchDocs` memoised — tokenising bodies on every keystroke is the
+`prepareSearchDocs` memoised: tokenising bodies on every keystroke is the
 mistake to avoid.
 
 ## Table of contents and heading anchors
 
-The loader already extracts headings. Add `id` slugs to rendered headings with
+The loader already collects headings. Add `id` slugs to rendered headings with
 `rehype-slug` and render `article.headings` as an in-page TOC in the right
 margin on `xl:` screens. Anchor ids must be stable across locales if links are
-shared — derive from the English heading or from an explicit `{#id}` suffix.
+shared: derive from the English heading or from an explicit `{#id}` suffix.
 
 ## "Was this helpful?"
 
 A two-button widget at the end of the article posting
 `{ category, slug, locale, helpful: boolean, comment? }` to a route handler
 that writes to the host's analytics or database. Rate-limit per IP per article.
-Show the aggregate (`87% found this helpful`) only after N ≥ 20 votes — early
+Show the aggregate (`87% found this helpful`) only after at least 20 votes: early
 percentages are noise that discourages readers.
 
 ## `updatedAt` from git
@@ -55,7 +55,7 @@ and the git date otherwise. Requires full history in CI (`fetch-depth: 0`).
 Callouts, tabs, an embedded booking widget. Switch the renderer to
 `next-mdx-remote` or `@next/mdx` with a small allowlist of components.
 Frontmatter, loader, search and routes do not change: MDX is a rendering
-concern. Validate that every component used in a file is in the allowlist —
+concern. Validate that every component used in a file is in the allowlist:
 an unknown component is a build error, which is the right outcome.
 
 ## A CMS or database as the source

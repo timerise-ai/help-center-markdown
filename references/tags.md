@@ -2,7 +2,7 @@
 
 Tags are the cross-category axis: a category answers "where does this
 article live", a tag answers "what else is about calendars". They are cheap
-for authors — one frontmatter line — and that is exactly the problem: nothing
+for authors, one frontmatter line, and that is exactly the problem: nothing
 stops `API` on Monday and `api` on Tuesday. The audited corpus had `API` and
 `api`, `integration` and `integrations`, and a two-word feature
 name with and without a hyphen. Rendered as plain chips nobody noticed; as
@@ -16,11 +16,11 @@ the slug is identity, the URL, and the search token.
 | Concept | Where | Notes |
 |---|---|---|
 | `article.tags: string[]` | frontmatter, `HelpArticleSummary` | The author's spellings, untouched. Rendered as chips; a search field. |
-| `tagSlug(label)` | `tags.ts` | `"Booking page"` → `booking-page`, `"Płatności"` → `platnosci`. Same folding as search. |
+| `tagSlug(label)` | `tags.ts` | `"Booking page"` becomes `booking-page`, `"Płatności"` becomes `platnosci`. Same folding as search. |
 | `HelpTagRef { slug, label }` | `model.ts` | What a chip links with. |
 | `HelpTag { slug, label, count }` | `model.ts`, `index.tags` | One per slug; `label` is the most frequent spelling. Sorted most-used first. |
-| `index.byTag` | `HelpIndex` | slug → articles, in index order. The tag page's whole query. |
-| `HELP_CONTENT.tagSegment` | `config.ts` | The literal URL segment (`tag`). Must match the route folder and must not be a category id, or the static segment shadows that category — `config.ts` throws at import if it is. |
+| `index.byTag` | `HelpIndex` | slug to articles, in index order. The tag page's whole query. |
+| `HELP_CONTENT.tagSegment` | `config.ts` | The literal URL segment (`tag`). Must match the route folder and must not be a category id, or the static segment shadows that category: `config.ts` throws at import if it is. |
 
 ```ts
 // file: src/lib/help/tags.ts
@@ -31,7 +31,7 @@ import { normalizeText } from "./search";
  * A tag's identity is its slug, not its spelling. Lowercase, fold diacritics
  * with the table search uses (so a typed query and a tag URL agree), collapse
  * every run of non-alphanumerics into one hyphen, trim the ends:
- * `"Booking page"` → `booking-page`, `"API"` → `api`, `"Płatności"` → `platnosci`.
+ * `"Booking page"` gives `booking-page`, `"API"` gives `api`, `"Płatności"` gives `platnosci`.
  * Returns `""` for a label with nothing usable (`"#"`); callers skip those.
  */
 export function tagSlug(label: string): string {
@@ -63,7 +63,7 @@ export type HelpTagGroup = HelpTag & {
 /**
  * Groups articles by tag slug. The display label is the most frequent
  * spelling (ties: first seen in index order). Sorted most-used first, then by
- * label in the locale's collation — the order a tag cloud wants.
+ * label in the locale's collation: the order a tag cloud wants.
  */
 export function groupTags(articles: readonly HelpArticle[], locale: string): HelpTagGroup[] {
   const collator = new Intl.Collator(locale);
@@ -95,12 +95,12 @@ once per index build; pages read `index.tags` and `index.byTag`, never regroup.
 ## Tag page
 
 ```
-app/[lang]/help/tag/[tag]/page.tsx     ← folder name = HELP_CONTENT.tagSegment
+app/[lang]/help/tag/[tag]/page.tsx     # folder name = HELP_CONTENT.tagSegment
 ```
 
 Next.js prefers the static `tag` segment over `[category]`, which is why the
 segment must not also be a category id. `/help/tag` on its own falls through to
-the category page, is not a category, and 404s — correct.
+the category page, is not a category, and 404s, which is correct.
 
 ```tsx
 // file: src/app/[lang]/help/tag/[tag]/page.tsx
@@ -149,7 +149,7 @@ export default async function HelpTagPage({ params }: Props) {
 
   return (
     <HelpShell locale={lang}>
-      {/* No category: the trail is Help › <tag label>. */}
+      {/* No category: the trail is Help > <tag label>. */}
       <HelpBreadcrumb locale={lang} strings={strings} articleTitle={tag.label} />
       <header className="mb-10">
         <h1>{formatMessage(strings.tagHeading, { tag: tag.label })}</h1>
@@ -171,8 +171,8 @@ single content tree every locale's `/help/tag/x` is the same document and
 canonicalises to the default locale; with per-locale trees each locale is its
 own page. `helpPageAlternates` encodes that; the sitemap
 ([routes.md](routes.md)) lists tag pages at priority 0.5 under the same locale
-rule. The tag set itself is per locale — it is built from the locale's index,
-which includes fallback articles — so a tag never disappears from a locale
+rule. The tag set itself is per locale: it is built from the locale's index,
+which includes fallback articles, so a tag never disappears from a locale
 because a translation is missing.
 
 ## Chips
@@ -180,7 +180,7 @@ because a translation is missing.
 Two surfaces, one rule: **a chip is a link except inside something that is
 already a link.** Article header and landing-page cloud render `HelpTagChips`
 (links); `HelpArticleList` rows are links themselves, so their chips stay
-spans — nested anchors are invalid HTML and browsers split them
+spans: nested anchors are invalid HTML and browsers split them
 unpredictably.
 
 ```tsx
@@ -228,19 +228,19 @@ warnings, all cheap and all found in a real corpus:
 | `tag "#" has no URL-safe form` | `tagSlug(label) === ""` | The chip renders; nothing links to it |
 
 Warnings, not errors: a spelling drift should not block a deploy, but the
-author must see it. Search is unaffected either way — both spellings tokenise
+author must see it. Search is unaffected either way: both spellings tokenise
 to the same term.
 
 ## Behaviour contract
 
 | Situation | Result |
 |---|---|
-| `tags: ["API"]` on one article, `["api"]` on another | one tag `api`, count 2; label is the majority spelling, ties → first in index order |
+| `tags: ["API"]` on one article, `["api"]` on another | one tag `api`, count 2; label is the majority spelling, ties go to the first in index order |
 | `tags: ["api", "API"]` on the **same** article | one chip, counted once for that article |
 | `tags: ["Płatności"]` | slug `platnosci`; `/help/tag/platnosci`; searching `platnosci` or `płatności` finds it |
 | `tags: ["#"]` | no chip link, no tag page; validation warning |
-| Category id equal to `tagSegment` | `config.ts` throws at import — the route would be shadowed |
-| Tag with no remaining articles after a content change | no page generated; inbound links 404 — add a redirect if the URL was shared |
+| Category id equal to `tagSegment` | `config.ts` throws at import; the route would be shadowed |
+| Tag with no remaining articles after a content change | no page generated; inbound links 404, so add a redirect if the URL was shared |
 
 ## Tests
 

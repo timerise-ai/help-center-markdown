@@ -2,7 +2,7 @@
 
 Everywhere this module touches its host. Fill in the right-hand column from the
 target app **before** generating code, and confirm the category vocabulary with
-the user — it is the one thing you cannot infer.
+the user: it is the one thing you cannot infer.
 
 | Seam | This skill ships | Your app supplies | Where it plugs in |
 |---|---|---|---|
@@ -23,8 +23,8 @@ the user — it is the one thing you cannot infer.
 
 No tenant scope, no auth guard, no database, no object storage: the module is
 public, read-only and file-backed. If the host wants a private help center,
-that is the host's route protection in front of these pages — nothing inside
-the module changes.
+that is the host's route protection in front of these pages, and nothing
+inside the module changes.
 
 ## Host probe
 
@@ -61,24 +61,36 @@ them once, before generating:
 
 Rename in `HELP_CATEGORY_IDS`, the `categories` block of every strings table,
 and the folder names. Nothing else references them by literal. Changing an id
-later is a URL change — add redirects.
+later is a URL change, so add redirects.
 
 **Do not rename** `slug`, `order`, `tags`, `related`, `updatedAt`, `featured`,
 `translated`: they are the frontmatter contract authors write against.
 
 ## What is not negotiable
 
+The same eight, in the same order, as the hard rules in `SKILL.md` and the non-negotiables in `README.md`.
+
 1. **Summaries, never articles, cross to the client.** `toSummary` /
    `toSearchDoc` exist so the corpus is not serialised into every page.
 2. **`hidden`, not a height cap, on collapsible nav.** A `max-height` cap with
-   `overflow-hidden` is how the earlier implementation lost half a category
-   with no signal.
+   `overflow-hidden` clips whatever does not fit and reports nothing.
 3. **Untranslated pages canonicalise to the default locale** and stay out of
    hreflang and the sitemap. Otherwise every fallback page is a duplicate.
 4. **Validation runs in CI.** The runtime is deliberately forgiving (drops bad
-   refs, sorts missing orders last); the script is where authors find out.
+   refs, sorts missing orders last); the script is where authors find out,
+   including that a `related` slug was renamed.
+5. **Sort by `order`, then title, then slug.** Ties left to `readdir` order
+   differ between filesystems.
+6. **Search trims, tokenises and folds diacritics, over tags and headings as
+   well as title and description, ranked by field.** A query is matched
+   however it is typed.
+7. **Every chrome string goes through `HelpStrings`.** The header, footer and
+   notices then switch locale together with the host.
+8. **Tags are keyed by `tagSlug`, never by spelling.** Case, hyphens and
+   plurals drift across authors; every variant lands on one page and the
+   validator reports the drift.
 
-Everything else — styling, naming, renderer, i18n system — is the host's.
+Everything else, meaning styling, naming, renderer and i18n system, is the host's.
 
 ## Integration points
 
@@ -89,7 +101,7 @@ Nothing fails loudly without these:
 - [ ] `help` strings added to **every** locale dictionary, not just the default
 - [ ] `helpSitemapEntries()` merged into the sitemap
 - [ ] Redirects from a legacy help subdomain or old article URLs
-- [ ] `validate:help` in CI before `build` — and run once on the existing corpus first; expect tag-spelling warnings
+- [ ] `validate:help` in CI before `build`, and run once on the existing corpus first; expect tag-spelling warnings
 - [ ] `tag/` route folder named to match `HELP_CONTENT.tagSegment`; no category uses that id
 - [ ] `reportHelpSearchMiss` wired to analytics
 - [ ] Support/contact CTA placed on the landing page (a host component, passed as children)
@@ -97,9 +109,10 @@ Nothing fails loudly without these:
 
 ## Order of work
 
-Config → model → frontmatter/loader → validation script (run it on the real
-content now: it finds authoring problems before any UI exists) → strings →
-paths/SEO → routes → shell and navigation → search → tests → host styling.
+Config, then model, then frontmatter and loader, then the validation script
+(run it on the real content now: it finds authoring problems before any UI
+exists), then strings, paths and SEO, routes, shell and navigation, search,
+tests, and last the host styling.
 
 Run the loader and validator against the actual corpus as soon as they exist.
 Real content is the only fixture that finds the `order` ties, the stale dates,

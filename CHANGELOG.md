@@ -85,7 +85,7 @@ unchanged from 0.2.2.
   heading, and a *Not this* table points neighbouring problems to the right skill or tool.
 - README: the skill's origin is reworded. It was written by the engineers who built the
   module it describes; the reference point for `provenance.md` is the earlier
-  implementation rather than "the source"; the index is called Timerise Skills.
+  implementation rather than a name for the codebase; the index is called Timerise Skills.
 - README: every em-dash, arrow and en-dash in the prose is rewritten as a comma, colon,
   full stop or conjunction.
 
@@ -96,11 +96,10 @@ unchanged from 0.2.2.
   `references/`: the skill is introduced as an [Agent Skill](https://agentskills.io)
   rather than a Claude Code skill, the pitch names the tag layer, related
   articles, breadcrumbs, JSON-LD and sitemap entries it already ships, the
-  extraction figures match `provenance.md` (65 articles, three categories,
-  three locale prefixes), and a new paragraph states the `getHelpIndex` seam —
-  nothing but the loader touches `fs`, so a CMS or database source swaps in
-  without changing routes, search or tag pages — and that the module is public,
-  read-only and file-backed.
+  description of the earlier implementation matches `provenance.md`, and a new
+  paragraph states the `getHelpIndex` seam (nothing but the loader touches `fs`,
+  so a CMS or database source swaps in without changing routes, search or tag
+  pages) and that the module is public, read-only and file-backed.
 - The install section names the current release and how to scope the skill to a
   single project.
 - Repository metadata: a host-neutral GitHub description, and topics for the
@@ -125,9 +124,9 @@ unchanged from 0.2.2.
 
 ### Added
 - `README.md` links the [Timerise skills index](https://github.com/timerise-ai/skills)
-  — from the install section and a "Part of the Timerise skills" section naming
+  from the install section and a "Part of the Timerise skills" section naming
   the shared layout the skills follow.
-- `LICENSE` — MIT. The README declared MIT but no license text shipped,
+- `LICENSE`: MIT. The README declared MIT but no license text shipped,
   leaving the terms unstated for anyone cloning the skill.
 
 ## [0.2.0] - 2026-08-29
@@ -144,9 +143,9 @@ Second pass: tags become a first-class layer with their own pages.
   labels with no URL-safe form, with tests (`tags.test.ts`).
 - Per-key English fallback for JSON-dictionary hosts in `getHelpStrings`.
 - `provenance.md` adds defects 12 (a line-based
-  frontmatter parser that dropped multi-line arrays in 45 of 161 files) and
-  13 (tags keyed by spelling: 6 variant groups and 5 plural pairs in a
-  65-article corpus).
+  frontmatter parser that dropped multi-line arrays in roughly a quarter of the
+  content files) and 13 (tags keyed by spelling: several variant groups and
+  singular/plural pairs).
 - `README.md`: what the skill is, install, the reference file table, the four
   non-negotiables, contributing conventions, and author credit.
 
@@ -174,6 +173,6 @@ Initial release of the help-center skill.
   `noUncheckedIndexedAccess`.
 
 ### Fixed
-- Eleven defects from the source module, documented in
-  `references/provenance.md` — including a sidebar height cap that hid 25 of 45
-  articles and a search that ignored trailing whitespace, tags and headings.
+- Eleven defects found by the audit of the earlier implementation, documented
+  in `references/provenance.md`, including a sidebar height cap that hid more
+  than half of a category and a search that ignored trailing whitespace, tags and headings.

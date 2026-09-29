@@ -1,6 +1,6 @@
 # UI
 
-Structure, states and semantics. **No colours, radii, shadows or typography** —
+Structure, states and semantics. **No colours, radii, shadows or typography**:
 those come from the host. Every component emits `data-help-*` attributes and
 ARIA state (`aria-current`, `aria-expanded`, `data-active`) so the host attaches
 its styles to selectors rather than editing the markup. Layout utilities that
@@ -8,18 +8,18 @@ survive any design system (`flex`, `grid`, `gap`, `sticky`, `hidden lg:block`)
 are kept; everything decorative was stripped.
 
 ```
-HelpShell (server)                 ← reads the index, builds nav + search data
-├── HelpHeader (client)
-│   ├── brand slot · title
-│   ├── HelpSearch (desktop)       ← search.md
-│   ├── actions slot
-│   ├── mobile: search toggle, menu button, HelpSearch (collapsed)
-│   └── HelpDrawer → HelpNavTree
-├── <aside> sticky, scrollable → HelpNavTree
-└── <main> {children}
-    ├── HelpBreadcrumb
-    ├── HelpCategoryCard / HelpArticleList
-    └── HelpMarkdown
+HelpShell (server)                 # reads the index, builds nav + search data
++-- HelpHeader (client)
+|   +-- brand slot, title
+|   +-- HelpSearch (desktop)       # search.md
+|   +-- actions slot
+|   +-- mobile: search toggle, menu button, HelpSearch (collapsed)
+|   +-- HelpDrawer, holding HelpNavTree
++-- <aside> sticky, scrollable, holding HelpNavTree
++-- <main> {children}
+    +-- HelpBreadcrumb
+    +-- HelpCategoryCard / HelpArticleList
+    +-- HelpMarkdown
 ```
 
 ## Shell
@@ -43,7 +43,7 @@ type Props = {
   children: ReactNode;
   /** Logo or wordmark; rendered inside the home link. */
   brand?: ReactNode;
-  /** Right-hand header slot — sign-in, primary CTA. */
+  /** Right-hand header slot: sign-in, primary CTA. */
   headerActions?: ReactNode;
   footer?: ReactNode;
 };
@@ -121,8 +121,8 @@ export default function HelpShell({
 }
 ```
 
-`brand`, `headerActions` and `footer` are `ReactNode` props — the one kind of
-"function-like" thing that crosses the server → client boundary. The host
+`brand`, `headerActions` and `footer` are `ReactNode` props: the one kind of
+"function-like" thing that crosses the server to client boundary. The host
 passes its logo, its CTA button and its footer without the module importing
 any of them.
 
@@ -466,4 +466,4 @@ table of `data-help-*` style hooks are in [ui-content.md](ui-content.md).
 - [ ] Host primitives swapped in for input, drawer, icons where they exist
 - [ ] Sidebar scrolls independently; longest category fully reachable
 - [ ] Mobile: search toggle, drawer, Escape, scroll lock verified
-- [ ] Active/expanded states styled — hook table in [ui-content.md](ui-content.md)
+- [ ] Active/expanded states styled; hook table in [ui-content.md](ui-content.md)

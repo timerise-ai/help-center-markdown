@@ -12,19 +12,17 @@ tag and article pages, client-side search with ranking and keyboard navigation, 
 default-locale fallback, tags with slug identity and their own pages, related articles, breadcrumbs, JSON-LD
 and sitemap entries, and a content validator for CI. Content lives in the repository; there is no CMS.
 
-A help center is a small static site with one hard requirement: **every article must be reachable**: from the
-sidebar, from search, from a locale that has not been translated yet. This skill was written by the engineer
-who has shipped this module; the earlier implementation it was audited against was a marketing-site help
-center. The templates hold that requirement as verified properties: the sidebar shows every article of every
-category, the parser reads every frontmatter shape the corpus uses and the validator fails the build on the
-ones it cannot, tags group by slug so one label reaches one page however it is spelled, and search ranks a
-query however it is typed, trailing space and diacritics included. The loader, search and tag suites cover
-each of those; [references/provenance.md](references/provenance.md) carries the record.
+**A help center is a small static site with one hard requirement: every article must be reachable, from the
+sidebar, from search, and from a locale that has not been translated yet.** Every template is shaped around
+that requirement, and the build fails for the author before a reader finds a gap.
 
-The filesystem is a seam, not a premise: one `getHelpIndex(locale)` builds the index every page, the search
-box, the sitemap and the validator read from, and nothing else touches `fs`. Swapping in a CMS or a database
-means implementing a source that returns articles for a locale, and the routes, search and tag pages do not
-change. The module is public, read-only and file-backed: no auth, no tenancy, no database, no object storage.
+This skill was written by the engineer who has shipped this module; the earlier implementation it was audited
+against was a marketing-site help center. The templates hold the requirement as verified properties: the
+sidebar shows every article of every category, the parser reads every frontmatter shape the corpus uses and
+the validator fails the build on the ones it cannot, tags group by slug so one label reaches one page however
+it is spelled, and search ranks a query however it is typed, trailing space and diacritics included. The
+loader, search and tag suites cover each of those; [references/provenance.md](references/provenance.md)
+carries the record.
 
 ## Install
 
@@ -37,9 +35,11 @@ npx skills add timerise-ai/help-center-markdown
 
 Name the agents instead with `-a`, for example `npx skills add timerise-ai/help-center-markdown -a claude-code -a codex`.
 
-Or clone it yourself. Nothing here is Claude-specific: the skill is a plain [Agent
-Skills](https://agentskills.io) folder, `SKILL.md` plus markdown references with no file that calls a model,
-so cloning it into an agent's skills directory is all an install is. For Claude Code:
+### Manual install
+
+Nothing here is Claude-specific: the skill is a plain [Agent Skills](https://agentskills.io) folder,
+`SKILL.md` plus markdown references with no file that calls a model, so cloning it into an agent's skills
+directory is all an install is. For Claude Code:
 
 ```bash
 git clone https://github.com/timerise-ai/help-center-markdown.git ~/.claude/skills/help-center-markdown
@@ -55,7 +55,7 @@ ln -s ~/.claude/skills/help-center-markdown ~/.agents/skills/help-center-markdow
 ```
 
 Update the skill with `git pull` in its directory. The current release is **0.2.9**. See
-[`CHANGELOG.md`](CHANGELOG.md). The [skills index](https://github.com/timerise-ai/skills) lists the other
+[CHANGELOG.md](CHANGELOG.md). The [skills index](https://github.com/timerise-ai/skills) lists the other
 Timerise Skills and how to install them all at once.
 
 ## Activation
@@ -74,8 +74,12 @@ the skill stays cheap in context until a topic is actually needed.
 
 | File | Contents |
 |---|---|
-| `SKILL.md` | Entry point: architecture, critical facts, hard rules, and the reference directory |
-| `references/adaptation.md` | The seam contract with the host app:  styling, i18n, routing, the category rename |
+| `SKILL.md` | Entry point: architecture, critical facts, hard rules, quick start, and the reference directory |
+| `README.md` | This front door |
+| `CHANGELOG.md` | Keep a Changelog, one section per release, newest first |
+| `CLAUDE.md` | What this repository is and the conventions for editing the skill itself |
+| `LICENSE` | MIT |
+| `references/adaptation.md` | The seam contract with the host app: styling, i18n, routing, the category rename, the non-negotiables restated, order of work |
 | `references/content-model.md` | Config, types, frontmatter fields, slugs, and the CI validator |
 | `references/content-loader.md` | Reading files into the index: gray-matter, caching, locale fallback, sorting |
 | `references/search.md` | Client-side search: tokenizing, ranking, combobox keyboard behavior, no-results |
@@ -86,10 +90,20 @@ the skill stays cheap in context until a topic is actually needed.
 | `references/ui-content.md` | Breadcrumbs, category cards, article lists, the markdown renderer, style hooks |
 | `references/extensions.md` | Full-text/Pagefind, table of contents, feedback, git dates, MDX, CMS, redirects |
 | `references/provenance.md` | The engineering ledger: what the audit of the earlier implementation changed and how the templates verify it, what was kept on purpose, what is new |
+| `evals/` | The prompts an operator types after installing (`prompts.md`) and one file per agent eval: the skill installed into an empty Next.js app, one prompt, no help, then type-checked, built and tested |
+| `.github/workflows/agent-eval.yml` | Runs the agent evals on every published release through the index's reusable workflow; copied verbatim from the standard |
 
-## The four non-negotiables
+The filesystem is a seam, not a premise: one `getHelpIndex(locale)` builds the index every page, the search
+box, the sitemap and the validator read from, and nothing else touches `fs`. Swapping in a CMS or a database
+means implementing a source that returns articles for a locale, and the routes, search and tag pages do not
+change. The module is public, read-only and file-backed: no auth, no tenancy, no database, no object storage.
+The host app's styling, renderer and i18n stay the host app's; `references/adaptation.md` is where you wire
+them in.
 
-These travel with the module and are never optional (see `references/adaptation.md`):
+## The eight non-negotiables
+
+These travel with the module and are never optional. They are the hard rules in `SKILL.md`, in the same
+order, and `references/adaptation.md` restates them.
 
 1. **Summaries, never articles, cross to the client.** `toSummary` / `toSearchDoc` are the only shapes client
    components accept, so a page carries about a kilobyte per article rather than the whole corpus; the
@@ -102,6 +116,18 @@ These travel with the module and are never optional (see `references/adaptation.
 4. **Validation runs in CI.** The runtime is forgiving on purpose, dropping bad refs and sorting missing
    orders last, and `validate:help` fails the build for the author; the validator tests cover unresolved
    refs, order ties and skipped files.
+5. **Sort by `order`, then title, then slug.** Ties left to `readdir` order differ between filesystems, so
+   the same deploy could list articles differently on another build machine; the loader test orders by
+   `order` then title, never by filename, and the validator warns on ties.
+6. **Search trims, tokenises and folds diacritics, over tags and headings as well as title and description,
+   ranked by field.** A query is matched however it is typed, trailing space and accents included; the search
+   tests cover each of those and the title-over-description ranking.
+7. **Every chrome string goes through `HelpStrings`.** The header, footer and notices switch locale together
+   with the host; the components take their text only from the strings table, and the i18n checklist greps
+   for literals left in JSX.
+8. **Tags are keyed by `tagSlug`, never by spelling.** Case, hyphens and plurals drift across authors, so
+   every variant lands on one page; the tag tests merge spellings under one slug and the validator warns on
+   variants and plural pairs.
 
 Everything else is the host app's: styling, naming, renderer, i18n system.
 
@@ -117,10 +143,10 @@ Everything else is the host app's: styling, naming, renderer, i18n system.
 ## Contributing
 
 Issues and pull requests are welcome here. Pure markdown, with no build or lint step, but the code blocks are
-checked: every ` ```ts ` and ` ```tsx ` block starting with `// file: <path>` is extracted into a scratch
-project and type-checked under `strict` and `noUncheckedIndexedAccess`, with the `*.test.ts` blocks run.
-Claims in this skill are meant to be verifiable: if you change a factual claim, say how you verified it,
-whether against the library, the docs, or a reproduction.
+checked: every ` ```ts ` and ` ```tsx ` block starting with `// file: <path>` is copied into a scratch project
+and type-checked under `strict` and `noUncheckedIndexedAccess`, with the `*.test.ts` blocks run. Claims in
+this skill are meant to be verifiable: if you change a factual claim, say how you verified it, whether against
+the Next.js, gray-matter or react-markdown documentation, the HTML and ARIA specifications, or a reproduction.
 
 Adding, removing or renaming a file in `references/` means updating the quick start and the reference
 directory table in `SKILL.md`, the file table above, and any relative cross-links. Every odd-looking part of
@@ -128,6 +154,7 @@ the templates is there for a reason, and `references/provenance.md` is the ledge
 read it before simplifying anything, and add an entry for anything you change. Commits follow Conventional
 Commits and releases follow [STANDARD.md](https://github.com/timerise-ai/skills/blob/main/STANDARD.md) in the
 index; `CLAUDE.md` carries the full editing conventions.
+
 ## Part of the Timerise Skills
 
 This is one of the [Timerise Skills](https://github.com/timerise-ai/skills): modules for **Next.js App

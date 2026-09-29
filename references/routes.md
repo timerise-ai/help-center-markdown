@@ -1,7 +1,7 @@
 # Routes
 
 Three pages under a locale segment, all statically rendered from the index.
-Content lives in the repository, so a new article is a deploy — there is no
+Content lives in the repository, so a new article is a deploy; there is no
 revalidation story to design.
 
 ```
@@ -9,7 +9,7 @@ app/[lang]/help/
   page.tsx                       landing: category cards + featured articles + tag cloud
   [category]/page.tsx            category listing
   [category]/[slug]/page.tsx     article
-  tag/[tag]/page.tsx             articles sharing a tag — in tags.md
+  tag/[tag]/page.tsx             articles sharing a tag, in tags.md
 ```
 
 If the host has no locale segment, drop `[lang]` and pass
@@ -20,7 +20,7 @@ If the host has no locale segment, drop `[lang]` and pass
 The natural instinct is a `help/layout.tsx`. It cannot work here: the sidebar
 and the header need `activeCategory` and `activeSlug`, and a layout does not
 receive its children's params. Each page therefore wraps itself in
-`<HelpShell>` ([ui.md](ui.md)), which reads `getHelpIndex(locale)` — cached
+`<HelpShell>` ([ui.md](ui.md)), which reads `getHelpIndex(locale)`, cached
 per request, so the page and the shell share one parse.
 
 ## Static params and unknown slugs
@@ -66,7 +66,7 @@ function languageMap(locales: readonly string[], path: string): Record<string, s
 
 /**
  * Landing and category pages. With a single content tree, `/pl/help` is the
- * same document as `/help` — canonicalise to the default locale and declare
+ * same document as `/help`: canonicalise to the default locale and declare
  * no hreflang. With per-locale trees each locale is its own page.
  */
 export function helpPageAlternates(locale: string, path: string): Alternates {
@@ -102,7 +102,7 @@ export function articleJsonLd(article: HelpArticle): Record<string, unknown> {
     headline: article.title,
     description: article.description,
     inLanguage: article.locale,
-    // Omit rather than emit `dateModified: ""` — an empty date is invalid structured data.
+    // Omit rather than emit `dateModified: ""`: an empty date is invalid structured data.
     ...(article.updatedAt ? { dateModified: article.updatedAt } : {}),
     author: { "@type": "Organization", name: HELP_CONTENT.siteName },
     publisher: { "@type": "Organization", name: HELP_CONTENT.siteName, url: HELP_CONTENT.siteUrl },
@@ -462,12 +462,12 @@ export function helpSitemapEntries(now: Date = new Date()): MetadataRoute.Sitema
 | `/{lang}/help` | landing | `lang` not in `routeLocales` (host proxy/middleware) |
 | `/{lang}/help/{category}` | category list | `category` not in `HELP_CATEGORY_IDS` |
 | `/{lang}/help/{category}/{slug}` | article | no file in `lang` **or** the default locale |
-| `/{lang}/help/tag/{tag}` | every article with the tag, across categories — [tags.md](tags.md) | `tag` not in `index.tags` |
+| `/{lang}/help/tag/{tag}` | every article with the tag, across categories, see [tags.md](tags.md) | `tag` not in `index.tags` |
 
 ## Checklist
 
 - [ ] Four pages in place; `dynamicParams = false` on category, tag and article
-- [ ] Locale middleware/proxy already rewrites `/help` → `/{default}/help` (host)
+- [ ] Locale middleware/proxy already rewrites `/help` to `/{default}/help` (host)
 - [ ] Canonicals verified on a non-default locale URL for both translated and untranslated articles
 - [ ] JSON-LD validated (Rich Results test) on one article
 - [ ] `helpSitemapEntries()` merged into the host sitemap

@@ -4,7 +4,7 @@ Reads the markdown tree into one immutable `HelpIndex` per locale, once per
 request. Every page, the layout, metadata, the sitemap and the static-params
 generator read from that index instead of touching the filesystem themselves.
 
-Server-only: it imports `node:fs`. Never import it from a `"use client"` file —
+Server-only: it imports `node:fs`. Never import it from a `"use client"` file:
 the client gets `HelpArticleSummary[]` and `HelpSearchDoc[]` as props.
 
 ## Why an index
@@ -27,7 +27,7 @@ import matter from "gray-matter";
 export type Frontmatter = Record<string, unknown>;
 
 // YAML turns an unquoted `updatedAt: 2026-02-09` into a Date. Every consumer
-// wants the string back — keep the time only when the source carried one.
+// wants the string back; keep the time only when the source carried one.
 function normalizeValue(value: unknown): unknown {
   if (value instanceof Date) {
     const iso = value.toISOString();
@@ -158,7 +158,7 @@ function resolveFile(
 const FENCED_CODE = /`{3}[\s\S]*?`{3}/g;
 const HEADING = /^#{1,3}[ \t]+(.+?)[ \t]*#*[ \t]*$/gm;
 
-/** `#`–`###` headings outside code fences — the cheap half of full-text search. */
+/** `#` to `###` headings outside code fences: the cheap half of full-text search. */
 export function extractHeadings(markdown: string): string[] {
   const body = markdown.replace(FENCED_CODE, "");
   return Array.from(body.matchAll(HEADING), (m) => (m[1] ?? "").trim()).filter(Boolean);
@@ -207,7 +207,7 @@ function readArticle(
 
 /**
  * Pure assembly step, exported so tests can build an index from in-memory
- * articles. Sorting is deterministic: `order`, then title, then slug —
+ * articles. Sorting is deterministic: `order`, then title, then slug,
  * never `readdir` order, which differs between filesystems.
  */
 export function assembleIndex(
@@ -333,19 +333,19 @@ export function translatedLocales(category: HelpCategoryId, slug: string): strin
 |---|---|
 | `pl` requested, `pl/app/x.md` exists | served from `pl`, `translated: true` |
 | `pl` requested, only `en/app/x.md` exists | served from `en`, `translated: false`, still listed in `pl` navigation |
-| Single tree, any non-default locale | every article `translated: false` — the page is a duplicate of the default-locale URL and its canonical says so |
+| Single tree, any non-default locale | every article `translated: false`: the page is a duplicate of the default-locale URL and its canonical says so |
 | File `Bad_Name.md` | not loaded; `skipped` with `invalid slug`; validation error |
 | Invalid YAML | not loaded; `skipped` with the parser message and file path |
 | Two articles with `order: 5` | stable order by title; validation warning |
 | `related: ["x"]` where `x` is in another category only | resolves globally; warning if `x` exists in two categories |
 | `related: ["x"]` where `x` does not exist | dropped at runtime; validation **error** |
 | `tags: ["API"]` here, `tags: ["api"]` there | one tag `api` in `index.tags`, both articles in `byTag`; validation warning ([tags.md](tags.md)) |
-| `slug` in URL fails `HELP_SLUG_PATTERN` | never reaches `path.join` — the index has no such key |
+| `slug` in URL fails `HELP_SLUG_PATTERN` | never reaches `path.join`; the index has no such key |
 
 ## Tests
 
 These run against real files in a temp directory; they exercise fallback,
-skipping, heading extraction and sort order. `HELP_CONTENT` is a plain mutable
+skipping, heading collection and sort order. `HELP_CONTENT` is a plain mutable
 object precisely so a test can point it at a fixture tree.
 
 ```ts
@@ -439,12 +439,12 @@ describe("extractHeadings", () => {
 });
 ```
 
-Run with `vitest run` or `bun test` — Bun aliases `vitest` imports to its own
+Run with `vitest run` or `bun test`: Bun aliases `vitest` imports to its own
 runner, so the same file works under both.
 
 ## Checklist
 
 - [ ] `frontmatter.ts`, `loader.ts` copied; `gray-matter` present in the host
-- [ ] Every page/metadata/sitemap call site reads from `getHelpIndex` — no direct `fs` elsewhere
+- [ ] Every page/metadata/sitemap call site reads from `getHelpIndex`, with no direct `fs` elsewhere
 - [ ] Nothing under `"use client"` imports `loader.ts`
 - [ ] Loader tests passing against a fixture tree

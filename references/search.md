@@ -8,8 +8,8 @@ and results appear on the first keystroke with no network.
 The earlier implementation searched `title` and `description` with
 `includes()`. That misses
 an article whose only mention of "webhook" is in a heading, ranks a description
-hit equal to a title hit, and — because the query was lowercased but never
-trimmed — returned nothing for `"webhooks "` with the trailing space mobile
+hit equal to a title hit, and, because the query was lowercased but never
+trimmed, returned nothing for `"webhooks "` with the trailing space mobile
 keyboards add after autocomplete. All three are fixed below.
 
 ## Index document
@@ -19,8 +19,8 @@ export type HelpSearchDoc = HelpArticleSummary & { headings: string[] };
 ```
 
 Defined in `model.ts` ([content-model.md](content-model.md)); built server-side
-with `toSearchDoc(article)`. Headings come from the loader, extracted outside
-code fences. Body text is deliberately not indexed — see
+with `toSearchDoc(article)`. Headings come from the loader, collected outside
+code fences. Body text is deliberately not indexed; see
 [extensions.md](extensions.md) for full-text options when headings stop being
 enough.
 
@@ -42,7 +42,7 @@ type Field = keyof typeof WEIGHTS;
 const FIELDS = Object.keys(WEIGHTS) as Field[];
 
 // NFD splits "é" into "e" + combining acute, which the range strips. Letters
-// that do not decompose need an explicit map — Polish ł is the common one.
+// that do not decompose need an explicit map; Polish ł is the common one.
 const NON_DECOMPOSABLE: Record<string, string> = {
   ł: "l",
   ß: "ss",
@@ -126,7 +126,7 @@ export function searchPreparedDocs(
   return prepared
     .map((p, position) => ({ p, position, score: scorePreparedDoc(p, tokens, phrase) }))
     .filter((entry) => entry.score > 0)
-    // Ties keep index order, which is category order then article order —
+    // Ties keep index order, which is category order then article order,
     // so equally-scored results appear in the same order as the sidebar.
     .sort((a, b) => b.score - a.score || a.position - b.position)
     .slice(0, limit)
@@ -147,9 +147,9 @@ Trade-offs, so nobody "improves" them blind:
 
 | Choice | Why | When to revisit |
 |---|---|---|
-| Prefix match, not fuzzy | Predictable; "webh" finds Webhooks, "wbhook" does not. Fuzzy matching on 60 short titles produces more noise than recall | Users report zero-result typos in the log — then consider a Levenshtein tolerance of 1 on tokens ≥ 5 chars |
+| Prefix match, not fuzzy | Predictable; "webh" finds Webhooks, "wbhook" does not. Fuzzy matching on a few dozen short titles produces more noise than recall | Users report zero-result typos in the log; then consider a Levenshtein tolerance of 1 on tokens of 5 or more chars |
 | AND across tokens | "google calendar" should not return every calendar article | Never; OR belongs to full-text engines with relevance ranking |
-| Diacritics folded | `platnosci` must find `Płatności` — users type without accents on phones | Never |
+| Diacritics folded | `platnosci` must find `Płatności`: users type without accents on phones | Never |
 | No stemming | "bookings" does not find "booking"; prefix covers the common direction ("book" finds both) | If the language has heavy inflection (Polish), add a per-locale stem list |
 | Ties by index order | Deterministic and matches the sidebar | Never |
 
@@ -284,7 +284,7 @@ type Props = {
   categoryLabels: Record<HelpCategoryId, string>;
   autoFocus?: boolean;
   onNoResults?: (query: string) => void;
-  /** Called after a result is chosen — the mobile header closes its search panel here. */
+  /** Called after a result is chosen; the mobile header closes its search panel here. */
   onSelect?: () => void;
 };
 
@@ -364,7 +364,7 @@ export default function HelpSearch({
                     <span>{doc.title}</span>
                     <span>
                       {categoryLabels[doc.category]}
-                      {doc.description ? ` · ${doc.description}` : ""}
+                      {doc.description ? ` \u00b7 ${doc.description}` : ""}
                     </span>
                   </Link>
                 </li>

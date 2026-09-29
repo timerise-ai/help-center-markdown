@@ -2,7 +2,7 @@
 
 Articles are markdown files in the repository. The filesystem *is* the schema:
 the folder is the category, the filename is the slug, the frontmatter is the
-metadata. There is no database, no CMS, no admin UI — an article ships the way
+metadata. There is no database, no CMS, no admin UI: an article ships the way
 code ships, through a pull request.
 
 ## Directory layouts
@@ -12,25 +12,25 @@ Two layouts, selected by `HELP_CONTENT.perLocaleDirectories`:
 ```
 Single-language tree (perLocaleDirectories: false)
 content/help/
-  app/                 ← category id
-    get-started.md     ← slug
+  app/                 # category id
+    get-started.md     # slug
     add-a-location.md
   general/
   development/
 
 Per-locale tree (perLocaleDirectories: true)
 content/help/
-  en/                  ← default locale: must be complete
+  en/                  # default locale: must be complete
     app/get-started.md
     development/webhooks.md
-  pl/                  ← may be partial; missing files fall back to `en`
+  pl/                  # may be partial; missing files fall back to `en`
     app/get-started.md
   de/
 ```
 
 The per-locale tree is the general case; the single tree is the degenerate one.
 The loader handles both with the same fallback rule, so start single-language
-and flip the flag when the first translation lands — no article moves except
+and flip the flag when the first translation lands; no article moves except
 into `<defaultLocale>/`. See [i18n.md](i18n.md) for what fallback means for
 URLs, canonicals and the sitemap.
 
@@ -65,7 +65,7 @@ export type HelpContentConfig = {
   routeLocales: readonly string[];
   /** Locale whose content tree must be complete; the fallback for all others. */
   defaultLocale: string;
-  /** `true` → `<root>/<locale>/<category>/<slug>.md`; `false` → `<root>/<category>/<slug>.md`. */
+  /** `true`: `<root>/<locale>/<category>/<slug>.md`; `false`: `<root>/<category>/<slug>.md`. */
   perLocaleDirectories: boolean;
   /** Landing page shows `featured: true` articles, or the first N if none is flagged. */
   featuredFallback: number;
@@ -74,7 +74,7 @@ export type HelpContentConfig = {
   siteUrl: string;
   /**
    * URL segment of tag pages: `<basePath>/<tagSegment>/<slug>`. Must equal the
-   * route folder name and must not be a category id — a static segment shadows
+   * route folder name and must not be a category id: a static segment shadows
    * the dynamic `[category]` one. See tags.md.
    */
   tagSegment: string;
@@ -118,12 +118,12 @@ featured: false
 |---|---|---|---|
 | `title` | string | yes | Page `<h1>`, nav label, search field (highest weight) |
 | `description` | string | yes | Meta description, list excerpt, search field |
-| `order` | integer | recommended | Sort key within the category. Ties break by title, then slug — never by filesystem order |
-| `tags` | string[] | no | Free-text labels. Chips linking to `/help/tag/<slug>`, a search field, and the tag index. Identity is the slug — `API` and `api` are one tag, and validation says so. See [tags.md](tags.md) |
+| `order` | integer | recommended | Sort key within the category. Ties break by title, then slug, never by filesystem order |
+| `tags` | string[] | no | Free-text labels. Chips linking to `/help/tag/<slug>`, a search field, and the tag index. Identity is the slug: `API` and `api` are one tag, and validation says so. See [tags.md](tags.md) |
 | `related` | string[] | no | Bare `slug` resolves in the same category first; `category/slug` is explicit |
-| `updatedAt` | `YYYY-MM-DD` | recommended | Shown on the page, `dateModified` in JSON-LD, `lastmod` in the sitemap. Quote it — unquoted YAML dates parse as `Date` objects (the parser normalises them back, but quoting avoids the surprise) |
+| `updatedAt` | `YYYY-MM-DD` | recommended | Shown on the page, `dateModified` in JSON-LD, `lastmod` in the sitemap. Quote it: unquoted YAML dates parse as `Date` objects (the parser normalises them back, but quoting avoids the surprise) |
 | `featured` | boolean | no | Landing-page pick. With none flagged, the first `featuredFallback` articles are shown |
-| `slug`, `category` | string | no | **Ignored by the loader** — the filename and folder win. If present they must agree, or validation fails the build |
+| `slug`, `category` | string | no | **Ignored by the loader**: the filename and folder win. If present they must agree, or validation fails the build |
 
 The body starts at `##`. Pages own their `<h1>`; the renderer demotes any `#`
 it meets to `<h2>` styling so a stray one cannot produce two top-level headings.
@@ -137,7 +137,7 @@ it meets to `<h2>` styling so a stray one cannot produce two top-level headings.
   slug appears in two categories because bare `related` references then become
   ambiguous.
 - Stable across locales. A translation is the same slug in another locale's
-  folder. This is the whole locale model — there is no translation key to keep
+  folder. This is the whole locale model; there is no translation key to keep
   in sync, unlike marketing content where localized slugs matter for SEO.
 - Renaming a slug is a URL change: add a redirect and update every `related`
   that pointed at it. Validation catches the second; nothing catches the first.
@@ -162,11 +162,11 @@ export type HelpArticle = HelpArticleSummary & {
   related: string[];
   updatedAt: string | null;
   featured: boolean;
-  /** Locale of the file actually served — the default locale when falling back. */
+  /** Locale of the file actually served: the default locale when falling back. */
   locale: string;
   /** False when the requested locale had no file and the default locale's was served. */
   translated: boolean;
-  /** `##`/`###` headings, extracted at load time for search. */
+  /** `##`/`###` headings, collected at load time for search. */
   headings: string[];
   /** File-level problems found while loading; surfaced by validation, never at runtime. */
   issues: string[];
@@ -198,7 +198,7 @@ export type HelpIndex = {
   skipped: HelpSkipped[];
   /** Every tag, most used first; `label` is the most frequent spelling. */
   tags: HelpTag[];
-  /** Tag slug → articles carrying it, in index order. */
+  /** Tag slug to the articles carrying it, in index order. */
   byTag: Map<string, HelpArticle[]>;
 };
 
@@ -238,7 +238,7 @@ always.
 Nothing in the runtime path warns. A `related` entry that resolves to nothing
 is silently dropped; a missing `order` sorts last; a typo in `updatedAt` renders
 "Invalid Date". Each of these is fine for the reader and invisible to the
-author — so run validation in CI and fail the build.
+author, so run validation in CI and fail the build.
 
 ```ts
 // file: src/lib/help/validate.ts
@@ -367,7 +367,7 @@ if (errors > 0) process.exit(1);
 Wire it as `"validate:help": "bun scripts/validate-help.ts"` (or `tsx`) and
 run it before `build`. Warnings are informational; errors fail. Run against a
 real corpus this reported order ties and a batch of `updatedAt` values that had
-clearly never been updated since import — both invisible on the site.
+clearly never been updated since import, both invisible on the site.
 
 ### Tests for the validator
 
@@ -443,7 +443,7 @@ describe("validateHelpIndex", () => {
 - Description is the sentence under the title in every list and the meta
   description. Write it as the answer to "what will I be able to do".
 - `updatedAt` means "content last changed", not "file last touched". If it is
-  going to be wrong, leave it out — the page hides the line rather than showing
+  going to be wrong, leave it out: the page hides the line rather than showing
   a stale date. Deriving it from git is an extension
   ([extensions.md](extensions.md)).
 - Prefer `related` over inline cross-links: it survives renames (validation
