@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.10] - 2026-09-29
+
+Documentation-only release. The skill content is unchanged from 0.2.9: the templates
+render and test the same, and the hard rules are the same rules, now in one list.
+
+### Changed
+
+- The hard rules in `SKILL.md` and the non-negotiables in `README.md` are one list of
+  eight, in the same order, restated in `references/adaptation.md` and `CLAUDE.md`:
+  summaries to the client, `hidden` not a height cap, untranslated pages canonicalised,
+  validation in CI, sort by order then title then slug, search that trims, tokenises
+  and folds diacritics, chrome strings through `HelpStrings`, tags keyed by `tagSlug`.
+- `README.md`, `SKILL.md` and `CLAUDE.md` follow the section shapes of the index's
+  STANDARD.md: a separate insight paragraph and a *Manual install* heading in the
+  README, a file table listing every file, a frontmatter description that names the
+  content seam and what the skill is not, and a quick start that names every reference.
+- Plain punctuation across all markdown, code comments and diagrams included; the
+  glyphs the UI renders are written as JavaScript escapes.
+- Corpus figures of the earlier implementation are gone from `provenance.md`,
+  `search.md` and older changelog entries, replaced by the shape of each finding; the
+  provenance additions are marked as never run in production.
+
 ## [0.2.9] - 2026-09-21
 
 Wording release. The skill content is unchanged from 0.2.8.
