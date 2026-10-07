@@ -327,6 +327,15 @@ export function translatedLocales(category: HelpCategoryId, slug: string): strin
 }
 ```
 
+**The Turbopack trace warning is expected.** `next build` on Turbopack reports
+"Encountered unexpected file in NFT list" with this loader in the import trace:
+it reads a configured root at build time, so the tracer keeps the content
+folder and some project files beside it. Every help route and the sitemap are
+prerendered, so nothing reads them at request time. A `turbopackIgnore` comment
+on `process.cwd()` does not clear the warning, since the joins below it stay
+dynamic. Leave the loader as shipped; a host that wants an explicit trace adds
+`outputFileTracingIncludes` for `content/help` in its own `next.config`.
+
 ## Behaviour contract
 
 | Situation | Result |
