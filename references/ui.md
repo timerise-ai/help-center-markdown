@@ -3,9 +3,13 @@
 Structure, states and semantics. **No colours, radii, shadows or typography**:
 those come from the host. Every component emits `data-help-*` attributes and
 ARIA state (`aria-current`, `aria-expanded`, `data-active`) so the host attaches
-its styles to selectors rather than editing the markup. Layout utilities that
-survive any design system (`flex`, `grid`, `gap`, `sticky`, `hidden lg:block`)
-are kept; everything decorative was stripped.
+its styles to selectors rather than editing the markup. Tailwind layout
+utilities (`flex`, `grid`, `gap`, `sticky`, `hidden lg:block`) are kept;
+everything decorative was stripped. A host without Tailwind defines the
+utilities the templates use in its global stylesheet, imported from its root
+layout, `lg:` as a `min-width: 1024px` media query. The markup and the
+templates' imports stay as shipped: no stylesheet import and no extra attribute
+in a template.
 
 ```
 HelpShell (server)                 # reads the index, builds nav + search data

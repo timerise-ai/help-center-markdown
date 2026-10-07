@@ -97,6 +97,10 @@ if (isHelpCategory(HELP_CONTENT.tagSegment)) {
 }
 ```
 
+`siteName` and `siteUrl` are literals copied from the host's site config; with
+none, the placeholders stay and the handover says so. Neither is read from an
+environment variable ([adaptation.md](adaptation.md)).
+
 ## Frontmatter
 
 ```yaml

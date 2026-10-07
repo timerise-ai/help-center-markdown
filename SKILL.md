@@ -27,12 +27,10 @@ description: >
 A help center is a small static site with one hard requirement: **every
 article must be reachable**, from the sidebar, from search, and from a
 translated locale that does not have it yet. Written by the engineer who has
-shipped this module; the earlier implementation was a marketing-site help
-center. The module below holds that requirement as verified properties: the
-sidebar shows every article of every category, search ranks a query however
-it is typed, related links resolve or the validator fails the build. The
-loader, search and tag suites cover each; the record is in
-`references/provenance.md`.
+shipped this module, which holds that requirement as verified properties: the
+sidebar shows every article, search ranks a query however it is typed, related
+links resolve or the validator fails the build. The loader, search and tag
+suites cover each; the record is in `references/provenance.md`.
 
 ## When to use
 
@@ -42,15 +40,11 @@ without multiple locales.
 
 ## When NOT to use
 
-- **A blog.** Dated, authored posts with covers and localized slugs are a
-  different content model; keep the host's blog module.
-- **Docs generated from code** (OpenAPI, TypeDoc): use their generators and
-  link to the output.
-- **A CMS-backed help site** with editors publishing at runtime: the index
-  contract still applies, but the loader, static params and validation change;
-  see the CMS note in [extensions.md](references/extensions.md).
-- **Marketing pages that happen to be markdown.** Reuse the host's renderer;
-  this module is the navigation, search and locale model around many articles.
+- **A blog**: dated, authored posts are another content model.
+- **Docs generated from code** (OpenAPI, TypeDoc): use their generators.
+- **A CMS-backed help site** publishing at runtime: the index contract holds,
+  the loader changes; see the CMS note in [extensions.md](references/extensions.md).
+- **Marketing pages that happen to be markdown**: reuse the host's renderer.
 
 ## Architecture
 
@@ -72,12 +66,10 @@ Everything reads from the index. Nothing else touches the filesystem.
 
 ## Critical facts
 
-1. **The filesystem is the schema.** Folder = category, filename = slug, and
-   frontmatter is metadata only. `slug`/`category` in frontmatter are validated
-   against the path, never used.
+1. **The filesystem is the schema.** Folder = category, filename = slug;
+   frontmatter `slug`/`category` are validated against the path, never used.
 2. **Only summaries cross to the client.** `toSummary`/`toSearchDoc` strip the
-   body; passing `HelpArticle` to a client component ships the whole corpus in
-   every page.
+   body; a `HelpArticle` in a client component ships the corpus in every page.
 3. **An untranslated page is a duplicate.** It renders from the default
    locale, keeps its place in navigation, shows a notice, canonicalises to the
    default-locale URL, and is absent from hreflang and the sitemap.
@@ -85,6 +77,12 @@ Everything reads from the index. Nothing else touches the filesystem.
    orders sort last, and `validate:help` fails the build for the author.
 5. **Search is client-side by design.** ~1 KB per article, already in the page
    for navigation, results on the first keystroke. Body search is an extension.
+6. **The templates are copied, not rewritten.** Only the seam values in
+   [adaptation.md](references/adaptation.md) change. `gray-matter`,
+   `react-markdown`, `remark-gfm` and `vitest` come from npm, which is not an
+   external service: an unattended run installs and lists them. The four test
+   files run unmodified: 23 tests. Without Tailwind, the host's global
+   stylesheet styles the layout utilities ([ui.md](references/ui.md)).
 
 ## Hard rules
 
@@ -131,14 +129,15 @@ The same eight, in the same order, as the README's non-negotiables and
 5. Add the three pages, SEO helpers and sitemap entries
    ([routes.md](references/routes.md)), then the tag page and linked chips
    ([tags.md](references/tags.md)).
-6. Build the shell, navigation tree and drawer ([ui.md](references/ui.md)),
-   then the breadcrumb, cards, lists and renderer on the host's primitives
-   ([ui-content.md](references/ui-content.md)).
-7. Drop in search and its hook; wire the zero-result hook to analytics:
-   [search.md](references/search.md).
-8. Run the shipped tests, then check the behaviour contract: longest category
+6. Build the shell, navigation and drawer ([ui.md](references/ui.md)), the
+   breadcrumb, cards, lists and renderer ([ui-content.md](references/ui-content.md)),
+   then search and its hook ([search.md](references/search.md)).
+7. Run the shipped tests, then check the behaviour contract: longest category
    fully reachable, trailing-space query, accented query, untranslated page's
-   canonical. Past the shipped module, see
+   canonical. Hand over the category ids (a later rename is a URL change), the
+   placeholder articles, `siteUrl` (a literal in `HELP_CONTENT`, never an
+   environment variable), `validate:help` for CI and `reportHelpSearchMiss` for
+   analytics. Past the shipped module, see
    [extensions.md](references/extensions.md); before simplifying anything, read
    [provenance.md](references/provenance.md).
 

@@ -13,7 +13,7 @@ the user: it is the one thing you cannot infer.
 | Tag URLs | `tag` segment, slug folding | A segment that is not a category id; the route folder named to match | `HELP_CONTENT.tagSegment`, [tags.md](tags.md) |
 | Markdown rendering | Minimal `react-markdown` component | Its existing renderer | `HelpMarkdown.tsx` |
 | Frontmatter parsing | `gray-matter` wrapper | `gray-matter` (or its parser) | `frontmatter.ts` |
-| Site identity | `siteName`, `siteUrl` | Its values for JSON-LD | `HELP_CONTENT` |
+| Site identity | `siteName`, `siteUrl` | Its values for JSON-LD, as literals | `HELP_CONTENT` |
 | Header slots | `brand`, `headerActions`, `footer` props | Logo, CTA, footer components | `HelpShell` |
 | UI primitives | Structure, ARIA, `data-help-*` hooks | Input, drawer, icons, card styles | [ui-content.md](ui-content.md) hook table |
 | Styling | Layout utilities only | Design tokens, typography | CSS on the hooks |
@@ -47,6 +47,15 @@ Consistency inside one codebase beats the skill's conventions.
 **Add no dependency the host lacks without asking.** `gray-matter`,
 `react-markdown` and `remark-gfm` are the only runtime packages the templates
 use; a host with its own frontmatter parser and renderer needs none of them.
+Working unattended, with nobody to ask, install them and `vitest` from npm and
+list them in the handover. The package registry is not an external service: a
+note that none is reachable never means writing a parser, a renderer or a test
+shim in their place.
+
+**Site identity is two literals.** Take `siteName` and `siteUrl` from the
+host's existing site config (`metadataBase`, a site constant) into
+`HELP_CONTENT`. A host with none keeps the placeholders and says so in the
+handover. The module reads no environment variable; do not add one for either.
 
 ## Naming the categories
 

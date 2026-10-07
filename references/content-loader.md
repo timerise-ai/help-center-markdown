@@ -440,11 +440,13 @@ describe("extractHeadings", () => {
 ```
 
 Run with `vitest run` or `bun test`: Bun aliases `vitest` imports to its own
-runner, so the same file works under both.
+runner, so the same file works under both. A host with neither installs vitest
+(`npm i -D vitest`) and wires `"test": "vitest run"`; the four test files stay
+as written, with no import rewrite and no other runner.
 
 ## Checklist
 
-- [ ] `frontmatter.ts`, `loader.ts` copied; `gray-matter` present in the host
+- [ ] `frontmatter.ts`, `loader.ts` copied unchanged; `gray-matter` installed
 - [ ] Every page/metadata/sitemap call site reads from `getHelpIndex`, with no direct `fs` elsewhere
 - [ ] Nothing under `"use client"` imports `loader.ts`
 - [ ] Loader tests passing against a fixture tree
