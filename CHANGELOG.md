@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.14] - 2026-10-07
+
+Fix release, from scoring the prompt-1 agent eval runs against 0.2.13. One template defect
+was fixed; the shipped suite grows from 23 to 27 tests in five files.
+
+### Fixed
+
+- `HelpDrawer` declared `aria-modal="true"` but did not contain focus: Tab from the last
+  link in the panel moved to the page behind the overlay. Tab and Shift+Tab now wrap
+  inside the panel through `focusWrapTarget` in `lib/help/focus.ts`, with four tests in
+  `lib/help/focus.test.ts` (`references/ui.md`). Apps built from earlier versions with
+  the reference drawer should copy in both files and the drawer's `Tab` branch; apps
+  using a host Sheet or Dialog primitive are unaffected.
+
+### Changed
+
+- The sixth critical fact in `SKILL.md` says the loader stays as shipped when Turbopack
+  warns about its trace, and states the new count: five test files, 27 tests. The
+  `references/content-loader.md` runner note says five files.
+- `references/provenance.md` records the drawer's focus containment under *Added*.
+
 ## [0.2.13] - 2026-10-07
 
 Fix release, from scoring the prompt-1 agent eval runs against 0.2.12. The templates are
