@@ -23,3 +23,9 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/help-center-markdown/actions/runs/37679758387
 ---
+
+Rubric 8/8. Scored from the summary. Packages from npm, the shipped suite under vitest (23 tests), layout
+utilities in `app/globals.css` imported from the root layout, and `siteUrl` a literal placeholder in
+`HELP_CONTENT`. It names the Turbopack trace warning as expected rather than touching the loader, and the
+final message hands over the category ids with the redirects a rename needs, the placeholder articles,
+`siteUrl`, the prebuild validator and `reportHelpSearchMiss`.
