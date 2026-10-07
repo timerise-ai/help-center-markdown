@@ -23,3 +23,9 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/help-center-markdown/actions/runs/37688399823
 ---
+
+Rubric 8/8. Scored from the summary. Packages from npm, the five test files unmodified under vitest (27
+tests), `prebuild` running the validator so every build fails on broken content, layout utilities in
+`app/globals.css`, `siteUrl` a literal placeholder, and a final message that hands over the category ids
+with redirects on a rename, the seven placeholder articles, `siteUrl` to set before deploying, the
+validator and the analytics hook.
