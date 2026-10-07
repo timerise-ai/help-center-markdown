@@ -135,11 +135,11 @@ The same eight, in order, as the README and [adaptation.md](references/adaptatio
 7. Run the shipped tests, then check the behaviour contract: longest category
    fully reachable, trailing-space query, accented query, untranslated page's
    canonical. The final message, not only a README, hands over the category ids
-   and that renaming one needs redirects, the placeholder articles, `siteUrl` (a
-   literal in `HELP_CONTENT`, never an environment variable), `validate:help`
-   for CI and `reportHelpSearchMiss` for analytics. Past the shipped module, see
-   [extensions.md](references/extensions.md); before simplifying anything, read
-   [provenance.md](references/provenance.md).
+   and that renaming one needs redirects, which articles are placeholders, that
+   `siteUrl` must be set before deploying (a literal in `HELP_CONTENT`, never an
+   environment variable), that `validate:help` runs before every build, and
+   `reportHelpSearchMiss` to wire to analytics. Next: [extensions.md](references/extensions.md);
+   before simplifying anything, [provenance.md](references/provenance.md).
 
 ## Reference directory
 
