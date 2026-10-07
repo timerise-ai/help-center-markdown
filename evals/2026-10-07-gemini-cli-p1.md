@@ -23,3 +23,9 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/help-center-markdown/actions/runs/37677211886
 ---
+
+Rubric 8/8. Scored from the summary; the Gemini CLI is not installed here for a rerun. It installed the
+packages from npm, ran the shipped suite under vitest (4 files, 23 tests) and styled the layout utilities
+and `data-help-*` hooks in `app/globals.css`. Its handover names `siteUrl` as a literal placeholder and not
+an environment variable, the starter articles, the category ids with redirects on a rename, the analytics
+hook and the locale settings.
