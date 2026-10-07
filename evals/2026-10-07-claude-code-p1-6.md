@@ -23,3 +23,8 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/help-center-markdown/actions/runs/37690964002
 ---
+
+Rubric 8/8. Scored from the summary. Packages from npm, the five test files unmodified under vitest (27
+tests), `prebuild` wired, layout utilities in `app/globals.css`, the loader left as shipped, and a "Before
+you deploy" section that hands over `siteUrl` to set, each placeholder article by name, the category ids
+with redirects on a rename and how to rename one, and `reportHelpSearchMiss` to connect.
