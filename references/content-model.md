@@ -369,7 +369,10 @@ if (errors > 0) process.exit(1);
 ```
 
 Wire it as `"validate:help": "bun scripts/validate-help.ts"` (or `tsx`) and
-run it before `build`. Warnings are informational; errors fail. Run against a
+`"prebuild": "npm run validate:help"`, so every `npm run build`, local or in CI,
+validates first. A host whose CI builds another way adds the same command as a
+CI step before `build`. Either way it is wired, not left to the operator.
+Warnings are informational; errors fail. Run against a
 real corpus this reported order ties and a batch of `updatedAt` values that had
 clearly never been updated since import, both invisible on the site.
 
@@ -458,5 +461,5 @@ describe("validateHelpIndex", () => {
 - [ ] Category ids chosen, ordered, and given labels in the strings table
 - [ ] Layout chosen (`perLocaleDirectories`) and `defaultLocale` tree complete
 - [ ] Every article has `title`, `description`, `order`; `updatedAt` quoted
-- [ ] `validate:help` script wired into CI before `build`
+- [ ] `validate:help` wired as `prebuild`, or as a CI step before `build`
 - [ ] Validator tests copied and passing

@@ -19,7 +19,7 @@ the user: it is the one thing you cannot infer.
 | Styling | Layout utilities only | Design tokens, typography | CSS on the hooks |
 | Analytics | `reportHelpSearchMiss(query)` | Its event pipeline | `analytics.ts` |
 | Tests | `vitest`-style files | `vitest` or `bun test` | `*.test.ts` |
-| Validation | `validate:help` script | A CI step before `build` | `package.json` |
+| Validation | `validate:help` script | `prebuild`, or a CI step before `build` | `package.json` |
 
 No tenant scope, no auth guard, no database, no object storage: the module is
 public, read-only and file-backed. If the host wants a private help center,
@@ -110,7 +110,7 @@ Nothing fails loudly without these:
 - [ ] `help` strings added to **every** locale dictionary, not just the default
 - [ ] `helpSitemapEntries()` merged into the sitemap
 - [ ] Redirects from a legacy help subdomain or old article URLs
-- [ ] `validate:help` in CI before `build`, and run once on the existing corpus first; expect tag-spelling warnings
+- [ ] `validate:help` as `prebuild` (or a CI step before `build`), and run once on the existing corpus first; expect tag-spelling warnings
 - [ ] `tag/` route folder named to match `HELP_CONTENT.tagSegment`; no category uses that id
 - [ ] `reportHelpSearchMiss` wired to analytics
 - [ ] Support/contact CTA placed on the landing page (a host component, passed as children)

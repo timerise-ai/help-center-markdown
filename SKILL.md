@@ -123,8 +123,8 @@ The same eight, in order, as the README and [adaptation.md](references/adaptatio
    [adaptation.md](references/adaptation.md).
 2. Choose the content layout and write the config:
    [content-model.md](references/content-model.md).
-3. Copy the loader and frontmatter parser; run the validator on the real
-   content immediately: [content-loader.md](references/content-loader.md).
+3. Copy the loader and parser, wire `"prebuild": "npm run validate:help"` and
+   run it on the real content now: [content-loader.md](references/content-loader.md).
 4. Wire strings and paths to the host's i18n: [i18n.md](references/i18n.md).
 5. Add the three pages, SEO helpers and sitemap entries
    ([routes.md](references/routes.md)), then the tag page and linked chips
