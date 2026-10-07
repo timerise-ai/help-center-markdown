@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.11] - 2026-10-07
+
+Fix release, from scoring the prompt-1 agent eval runs against 0.2.10. The templates and
+the eight hard rules are unchanged; the wording that let agents deviate from them is not.
+
+### Changed
+
+- `SKILL.md` gains a sixth critical fact: the templates are copied, not rewritten;
+  `gray-matter`, `react-markdown`, `remark-gfm` and `vitest` are installed from npm,
+  which is not an external service, and the four test files run unmodified (23 tests).
+  `references/adaptation.md` and `references/content-loader.md` say the same where the
+  dependency and runner choices are made.
+- `siteName` and `siteUrl` are literals in `HELP_CONTENT`, taken from the host's site
+  config or left as placeholders, and never read from an environment variable
+  (`references/adaptation.md`, `references/content-model.md`).
+- A host without Tailwind defines the layout utilities in its global stylesheet; the
+  markup and the templates' imports stay as shipped (`references/ui.md`).
+- The last quick-start step names the handover: category ids, placeholder articles,
+  `siteUrl`, `validate:help` in CI and `reportHelpSearchMiss` for analytics. The
+  search step merged into the UI step to keep `SKILL.md` within its line budget.
+
 ## [0.2.10] - 2026-09-29
 
 Documentation-only release. The skill content is unchanged from 0.2.9: the templates
