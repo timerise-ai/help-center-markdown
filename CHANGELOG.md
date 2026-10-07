@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.15] - 2026-10-07
+
+Fix release, from scoring the prompt-1 agent eval runs against 0.2.14. The templates are
+unchanged.
+
+### Changed
+
+- `validate:help` is wired as `"prebuild": "npm run validate:help"` by default, so every
+  build validates first, with a CI step before `build` as the variant for hosts whose CI
+  builds another way. Stated in the quick start of `SKILL.md`, in
+  `references/content-model.md` and in the seam table and checklist of
+  `references/adaptation.md`.
+
 ## [0.2.14] - 2026-10-07
 
 Fix release, from scoring the prompt-1 agent eval runs against 0.2.13. One template defect
