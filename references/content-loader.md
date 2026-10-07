@@ -450,7 +450,7 @@ describe("extractHeadings", () => {
 
 Run with `vitest run` or `bun test`: Bun aliases `vitest` imports to its own
 runner, so the same file works under both. A host with neither installs vitest
-(`npm i -D vitest`) and wires `"test": "vitest run"`; the four test files stay
+(`npm i -D vitest`) and wires `"test": "vitest run"`; the five test files stay
 as written, with no import rewrite and no other runner.
 
 ## Checklist

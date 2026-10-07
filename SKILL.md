@@ -80,14 +80,14 @@ Everything reads from the index. Nothing else touches the filesystem.
 6. **The templates are copied, not rewritten.** Only the seam values in
    [adaptation.md](references/adaptation.md) change. `gray-matter`,
    `react-markdown`, `remark-gfm` and `vitest` come from npm, which is not an
-   external service: an unattended run installs and lists them. The four test
-   files run unmodified: 23 tests. Without Tailwind, the host's global
-   stylesheet styles the layout utilities ([ui.md](references/ui.md)).
+   external service: an unattended run installs and lists them. The five test
+   files run unmodified: 27 tests. The loader stays as shipped when Turbopack
+   warns about its trace. Without Tailwind, the host's global stylesheet styles
+   the layout utilities ([ui.md](references/ui.md)).
 
 ## Hard rules
 
-The same eight, in the same order, as the README's non-negotiables and
-[adaptation.md](references/adaptation.md).
+The same eight, in order, as the README and [adaptation.md](references/adaptation.md).
 
 > **Never pass an article to a client component.** Only `toSummary` and
 > `toSearchDoc` shapes cross, so a page carries summaries, not the corpus.
@@ -152,7 +152,7 @@ The same eight, in the same order, as the README's non-negotiables and
 | Tags, tag pages, chips, tag cloud | tag, tags, tag page, chip, tag slug, spelling, plural, browse by tag | [tags.md](references/tags.md) |
 | Locales, strings, dates, canonicals | i18n, locale, translation, fallback, hreflang, strings, plural, Intl | [i18n.md](references/i18n.md) |
 | Pages, metadata, JSON-LD, sitemap | route, page.tsx, generateStaticParams, dynamicParams, notFound, canonical, TechArticle, sitemap | [routes.md](references/routes.md) |
-| Shell, header, sidebar, drawer | layout, sidebar, mobile menu, drawer, collapsible, sticky, HelpShell | [ui.md](references/ui.md) |
+| Shell, header, sidebar, drawer | layout, sidebar, mobile menu, drawer, focus trap, collapsible, sticky, HelpShell | [ui.md](references/ui.md) |
 | Breadcrumb, cards, lists, renderer, style hooks | breadcrumb, category card, article list, react-markdown, data-help, styling | [ui-content.md](references/ui-content.md) |
 | Beyond the shipped module | full-text, Pagefind, TOC, feedback, git dates, MDX, CMS, redirects | [extensions.md](references/extensions.md) |
 | Why the templates differ from the earlier implementation | provenance, audit, ledger, kept deliberately, fixing the earlier implementation | [provenance.md](references/provenance.md) |

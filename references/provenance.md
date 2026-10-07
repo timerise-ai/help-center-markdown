@@ -220,6 +220,10 @@ production, and marked as such wherever it appears:
 - The per-request index.
 - The strings table.
 - Drawer accessibility: Escape, scroll lock, focus restore.
+- **0.2.14:** focus containment in the drawer (`focusWrapTarget`, with tests).
+  The panel declared `aria-modal="true"` but Tab from its last link reached the
+  page behind it; an agent eval run on 0.2.13 added a trap to the drawer, and
+  the template now carries one.
 - Loader tests against a fixture tree.
 - **0.2.0:** the tag model (`tagSlug`, `index.tags`/`byTag`, the tag page,
   linked chips, tag sitemap entries) and the three tag validation checks

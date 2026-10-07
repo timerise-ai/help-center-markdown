@@ -391,13 +391,20 @@ Style hooks: `[data-help-nav] a[aria-current=page]`, `[data-help-chevron][data-o
 
 Use the host's Sheet/Drawer primitive if it has one (shadcn `Sheet`, Radix
 `Dialog`). This reference version covers what a bare `div` overlay misses:
-Escape closes, body scroll is locked, focus moves in and is restored.
+Escape closes, Tab and Shift+Tab stay inside the panel, body scroll is locked,
+focus moves in and is restored. The panel says `aria-modal="true"`, so focus
+must not reach the page behind it; `focusWrapTarget` decides where it wraps.
 
 ```tsx
 // file: src/components/help/HelpDrawer.tsx
 "use client";
 
 import { type ReactNode, useEffect, useRef } from "react";
+
+import { focusWrapTarget } from "@/lib/help/focus";
+
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
 
 type Props = {
   open: boolean;
@@ -419,6 +426,17 @@ export default function HelpDrawer({ open, onClose, title, closeLabel, children 
     panelRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.key === "Escape") onClose();
+      const panel = panelRef.current;
+      if (event.key !== "Tab" || !panel) return;
+      const items = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+        (node) => node.getClientRects().length > 0,
+      );
+      const active = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      const target = focusWrapTarget(items, active, event.shiftKey);
+      if (target) {
+        event.preventDefault();
+        target.focus();
+      }
     };
     document.addEventListener("keydown", onKeyDown);
     return () => {
@@ -461,6 +479,56 @@ export default function HelpDrawer({ open, onClose, title, closeLabel, children 
 }
 ```
 
+The wrap decision is a pure function, so it is tested without a DOM:
+
+```ts
+// file: src/lib/help/focus.ts
+/**
+ * Where focus goes when Tab would leave a modal panel, or `null` to let the
+ * browser move it. `items` are the panel's focusable elements in DOM order;
+ * `active` is the focused element, which may be the panel itself.
+ */
+export function focusWrapTarget<T>(items: readonly T[], active: T | null, backwards: boolean): T | null {
+  const first = items[0];
+  const last = items[items.length - 1];
+  if (first === undefined || last === undefined) return null;
+  const index = active === null ? -1 : items.indexOf(active);
+  if (backwards) return index <= 0 ? last : null;
+  return index === -1 || index === items.length - 1 ? first : null;
+}
+```
+
+```ts
+// file: src/lib/help/focus.test.ts
+import { describe, expect, it } from "vitest";
+
+import { focusWrapTarget } from "./focus";
+
+const items = ["close", "home", "article"];
+
+describe("focusWrapTarget", () => {
+  it("wraps Tab from the last control to the first", () => {
+    expect(focusWrapTarget(items, "article", false)).toBe("close");
+  });
+
+  it("wraps Shift+Tab from the first control to the last", () => {
+    expect(focusWrapTarget(items, "close", true)).toBe("article");
+  });
+
+  it("keeps focus inside from the panel itself or from outside it", () => {
+    expect(focusWrapTarget(items, "panel", true)).toBe("article");
+    expect(focusWrapTarget(items, "panel", false)).toBe("close");
+    expect(focusWrapTarget(items, null, false)).toBe("close");
+  });
+
+  it("leaves focus to the browser between the ends and with no controls", () => {
+    expect(focusWrapTarget(items, "home", false)).toBeNull();
+    expect(focusWrapTarget(items, "home", true)).toBeNull();
+    expect(focusWrapTarget([], "panel", false)).toBeNull();
+  });
+});
+```
+
 Breadcrumb, category cards, article lists, the markdown renderer and the
 table of `data-help-*` style hooks are in [ui-content.md](ui-content.md).
 
@@ -469,5 +537,5 @@ table of `data-help-*` style hooks are in [ui-content.md](ui-content.md).
 - [ ] `HelpShell` receives the host's brand, CTA and footer as props
 - [ ] Host primitives swapped in for input, drawer, icons where they exist
 - [ ] Sidebar scrolls independently; longest category fully reachable
-- [ ] Mobile: search toggle, drawer, Escape, scroll lock verified
+- [ ] Mobile: search toggle, drawer, Escape, Tab wrapping inside the panel, scroll lock verified
 - [ ] Active/expanded states styled; hook table in [ui-content.md](ui-content.md)
