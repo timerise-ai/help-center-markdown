@@ -135,7 +135,7 @@ The same eight, in the same order, as the README's non-negotiables and
 7. Run the shipped tests, then check the behaviour contract: longest category
    fully reachable, trailing-space query, accented query, untranslated page's
    canonical. The final message, not only a README, hands over the category ids
-   (a later rename is a URL change), the placeholder articles, `siteUrl` (a
+   and that renaming one needs redirects, the placeholder articles, `siteUrl` (a
    literal in `HELP_CONTENT`, never an environment variable), `validate:help`
    for CI and `reportHelpSearchMiss` for analytics. Past the shipped module, see
    [extensions.md](references/extensions.md); before simplifying anything, read
