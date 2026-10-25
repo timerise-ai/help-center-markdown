@@ -36,6 +36,8 @@ rationale layer: read it before "simplifying" anything.
   results. The procedure is section 10 of the index's STANDARD.md.
 - `.github/workflows/agent-eval.yml`: the caller of the index's reusable eval workflow, copied verbatim from
   STANDARD.md. Never edit it and never add a trigger.
+- `.github/cover.svg`: the README cover, rendered from the skill's cover motif on timerise.ai. It is not
+  skill content; redraw it there, not here.
 
 ## Editing conventions
 
